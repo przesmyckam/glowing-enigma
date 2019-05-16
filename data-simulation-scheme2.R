@@ -26,23 +26,23 @@ do_simulation <- function(ns) {
   
   all_combn <- combn(levels(randomed_samples[["block_id"]]), 2, simplify = FALSE)
   
-  res_t <- do.call(rbind, pblapply(all_combn, function(ith_combn) {
-    
+  res_t <- do.call(rbind, pblapply(1L:length(all_combn), function(ith_combn_id) {
+    ith_combn <- all_combn[[ith_combn_id]]
     best_res <- suppressMessages(BESTmcmc(randomed_samples[randomed_samples[["block_id"]] == ith_combn[1], "values"],
                                           randomed_samples[randomed_samples[["block_id"]] == ith_combn[2], "values"]))
     
-    data.frame(gr1 = ith_combn[1],
-               gr2 = ith_combn[2],
-               same = substr(ith_combn[1], 0, 1) == substr(ith_combn[2], 0, 1),
-               effSz = summary(best_res)["effSz", "mean"], 
-               p.value = t.test(randomed_samples[randomed_samples[["block_id"]] == ith_combn[1], "values"],
-                                randomed_samples[randomed_samples[["block_id"]] == ith_combn[2], "values"], 
-                                paired = FALSE)[["p.value"]])
+    complete_res <- data.frame(gr1 = ith_combn[1],
+                               gr2 = ith_combn[2],
+                               same = substr(ith_combn[1], 0, 1) == substr(ith_combn[2], 0, 1),
+                               effSz = summary(best_res)["effSz", "mean"], 
+                               p.value = t.test(randomed_samples[randomed_samples[["block_id"]] == ith_combn[1], "values"],
+                                                randomed_samples[randomed_samples[["block_id"]] == ith_combn[2], "values"], 
+                                                paired = FALSE)[["p.value"]])
+    
+    write.csv(complete_res, file = paste0("/home/michal/Dropbox/bayes-sim/res", ith_combn_id, ".csv"), row.names = FALSE)
   }))
 }
 
 set.seed(15390)
 
-res <- do_simulation(120)
-save(res, file = "simulation.RData")
-save(res, file = "/home/michal/Dropbox/PepArray_results/simulation.RData")
+res <- do_simulation(200)
