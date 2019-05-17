@@ -7,19 +7,8 @@ random_samples <- function(ns) {
   rbind(data.frame(block_id = paste0("A", unlist(lapply(1L:ns, rep, times = 10))), 
                    values = rnorm(10*ns, mean = 0, sd = 1)),
         data.frame(block_id = paste0("B", unlist(lapply(1L:ns, rep, times = 10))), 
-                   values = rnorm(10*ns, mean = 3, sd = 1)))
+                   values = rnorm(10*ns, mean = 1.5, sd = 1)))
 }
-
-adjust_subset <- function(ns, x)
-  lapply(2L:ns, function(ith_n) {
-    ids <- sample(1L:ns, ith_n)
-    subset_x <- x[grepl(pattern = paste0("[", paste0(ids, collapse = ""), "]"), x = x[["gr1"]]) & 
-                    grepl(pattern = paste0("[", paste0(ids, collapse = ""), "]", collapse = ""), x = x[["gr2"]]), ]
-    subset_x[["hochberg"]] <- p.adjust(subset_x[["p.value"]], method = "BH")
-    subset_x[["yekutieli"]] <- p.adjust(subset_x[["p.value"]], method = "BY")
-    subset_x[["ns"]] <- ith_n
-    subset_x[, c("same", "effSz", "hochberg", "yekutieli", "ns")]
-  })
 
 do_simulation <- function(ns) {
   randomed_samples <- random_samples(ns)
