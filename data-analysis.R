@@ -14,7 +14,7 @@ adjust_subset <- function(ns, x)
     subset_x[, c("same", "effSz", "hochberg", "yekutieli", "ns")]
   })
 
-dat <- adjust_subset(1e5, full_dat) %>% 
+dat <- adjust_subset(50, full_dat) %>% 
   bind_rows() %>% 
   group_by(ns, same) %>% 
   summarise(mean_eff = mean(effSz), mean_hochberg = mean(hochberg))

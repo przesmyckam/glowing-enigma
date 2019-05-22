@@ -7,7 +7,7 @@ random_samples <- function(ns) {
   rbind(data.frame(block_id = paste0("A", unlist(lapply(1L:ns, rep, times = 10))), 
                    values = rnorm(10*ns, mean = 0, sd = 1)),
         data.frame(block_id = paste0("B", unlist(lapply(1L:ns, rep, times = 10))), 
-                   values = rnorm(10*ns, mean = 1.5, sd = 1)))
+                   values = rnorm(10*ns, mean = 1, sd = 1)))
 }
 
 do_simulation <- function(ns) {
@@ -34,4 +34,4 @@ do_simulation <- function(ns) {
 
 set.seed(15390)
 
-res <- do_simulation(200)
+res <- do_simulation(5)
